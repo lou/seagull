@@ -23,8 +23,6 @@ Q.Sprite.extend("Shadow", {
   },
   draw: function(ctx) {
     ctx.fillStyle = this.p.color;
-    // Draw a filled rectangle centered at
-    // 0,0 (i.e. from -w/2,-h2 to w/2, h/2
     ctx.fillRect(-this.p.cx,
                  -this.p.cy,
                  this.p.w,
@@ -42,7 +40,7 @@ Q.Sprite.extend("Seagull", {
       z: 10,
       state: 'glyding',
       gravity: 0.3,
-      toughness: 10000
+      toughness: 1000
     });
     this.add('2d');
 
@@ -69,6 +67,9 @@ Q.Sprite.extend("Seagull", {
       case 'crashed':
         this.crash();
         break;
+      case 'exhausted':
+        this.glide();
+        break;
     } 
   },
 
@@ -92,10 +93,9 @@ Q.Sprite.extend("Seagull", {
 
   updateToughness: function(){
     if (this.p.toughness <= 0){
-      Q.stageScene("endGame", 1, { label: "You lose exhausted !" }); 
-      this.destroy();
+      this.p.state = 'exhausted';
     }
-    var toughness = Math.ceil(this.p.toughness / 100);
+    var toughness = Math.ceil(this.p.toughness / 10);
 
     $('#toughness').find('.bar').css({ width: toughness+'%' })
   },
@@ -199,7 +199,7 @@ Q.load("seagull.png, boat.png, lighthouse.png", function() {
 Q.el.addEventListener('mousedown',function(e) {
   var seagull = Q.stage().lists.Seagull[0];
 
-  if (seagull){
+  if (seagull && seagull.p.state != 'exhausted'){
     seagull.p.state = 'flying';
   }
 });
