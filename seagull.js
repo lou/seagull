@@ -211,7 +211,7 @@ Q.scene('endGame',function(stage) {
   box.fit(20);
 });
 
-Q.load("seagull.png, boat.png, lighthouse.png, sprites.png, sprites.json", function() {
+Q.load("boat.png, lighthouse.png, sprites.png", function() {
   Q.compileSheets("sprites.png", "sprites.json");
   Q.stageScene("level1");
 });
