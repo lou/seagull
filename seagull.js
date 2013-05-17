@@ -4,13 +4,25 @@ Quintus.Random = function(Q) {
   }
 };
 
-// Now set up your game (most games will load a separate .js file)
+Quintus.Data = function(Q) {
+  Q.assets['sprites.json'] = {
+    "seagull": { "sx": 0, "sy": 0, "cols": 5, "tilew": 80, "tileh": 104, "frames": 22 }
+  }
+}
+
+
+
 var Q = Quintus()
-        .include("Sprites, Scenes, Input, 2D, Touch, UI, Random")
+        .include("Sprites, Anim, Scenes, Input, 2D, Touch, UI, Random, Data")
         .setup({ maximize: true})
         .controls()
         .touch();
 
+
+Q.animations('seagull', {
+  glide: { frames: [10,11], rate: 1 },
+  fly: { frames: [11,12,13,14,15,16,17,18], rate: 1/15}
+});
 
 Q.Sprite.extend("Shadow", { 
   init: function(p) {
@@ -34,16 +46,18 @@ Q.Sprite.extend("Shadow", {
 Q.Sprite.extend("Seagull", { 
   init: function(p) {
     this._super(p, {
-      asset: 'seagull.png',
+      sprite: "seagull",
+      sheet: "seagull",
       x: 0,
       y: 0,
       z: 10,
+      vx: 400,
       state: 'glyding',
-      gravity: 0.3,
-      toughness: 1000
+      gravity: 0.15,
+      toughness: 1000,
+      points: [[-30, 0], [0, 10], [30, 0]]
     });
-    this.add('2d');
-
+    this.add('2d, animation');
     this.on("hit.sprite", function(collision) {
       if (collision.obj.isA('Boat')){
         this.crash('You crashed on a boat !');
@@ -79,7 +93,7 @@ Q.Sprite.extend("Seagull", {
 
     shadow.p.x = this.p.x - 10;
 
-    if ( shadowDistance <= 350 ){
+    if ( shadowDistance <= 300 ){
       shadow.p.color = "rgba(0,0,0,1)";
     } else {
       shadow.p.color = "rgba(0,0,0,0)";
@@ -100,15 +114,24 @@ Q.Sprite.extend("Seagull", {
     $('#toughness').find('.bar').css({ width: toughness+'%' })
   },
 
+  updateVelocity: function(){
+    var velocity = Math.ceil(this.p.toughness / 10);
+
+    $('#toughness').find('.bar').css({ width: toughness+'%' })
+  },
+
   fly: function(){
-     this.p.vy = -200;
-     this.p.vx = 400;
-     this.p.toughness -= 5;
+    this.play('fly');
+    this.p.toughness -= 3;
+
+    if (this.p.vy > -200){
+      this.p.vy -= 10;
+    }
+
   },
 
   glide: function(){
-    this.p.vx = 400;
-    this.p.toughness -= 1;
+    this.play('glide');
   },
 
   crash: function(text){
@@ -188,7 +211,8 @@ Q.scene('endGame',function(stage) {
   box.fit(20);
 });
 
-Q.load("seagull.png, boat.png, lighthouse.png", function() {
+Q.load("seagull.png, boat.png, lighthouse.png, sprites.png, sprites.json", function() {
+  Q.compileSheets("sprites.png", "sprites.json");
   Q.stageScene("level1");
 });
 
