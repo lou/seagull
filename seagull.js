@@ -1,3 +1,9 @@
+// TODO
+// - Shadow should be a seagull component
+// - fix crash when seagull hit the water
+// - seagull should be positioned on the left of the screen (not in center)
+// - add background and related sprites(water, clouds ....)
+
 Quintus.Random = function(Q) {
   Q.random = function(min,max) {
     return Math.ceil(min + Math.random() * (max - min));
@@ -6,11 +12,9 @@ Quintus.Random = function(Q) {
 
 Quintus.Data = function(Q) {
   Q.assets['sprites.json'] = {
-    "seagull": { "sx": 0, "sy": 0, "cols": 5, "tilew": 80, "tileh": 104, "frames": 22 }
+    "seagull": { "sx": 0, "sy": 0, "cols": 1, "tilew": 80, "tileh": 100, "frames": 9 }
   }
 }
-
-
 
 var Q = Quintus()
         .include("Sprites, Anim, Scenes, Input, 2D, Touch, UI, Random, Data")
@@ -20,8 +24,8 @@ var Q = Quintus()
 
 
 Q.animations('seagull', {
-  glide: { frames: [10,11], rate: 1 },
-  fly: { frames: [11,12,13,14,15,16,17,18], rate: 1/15}
+  glide: { frames: [7, 8], rate: 1 },
+  fly: { frames: [0,1,2,3,4,5,6,7,8], rate: 1/6, loop: true}
 });
 
 Q.Sprite.extend("Shadow", { 
