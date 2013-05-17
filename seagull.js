@@ -1,7 +1,6 @@
 // TODO
 // - Shadow should be a seagull component
 // - fix crash when seagull hit the water
-// - seagull should be positioned on the left of the screen (not in center)
 // - add background and related sprites(water, clouds ....)
 
 Quintus.Random = function(Q) {
@@ -24,15 +23,15 @@ var Q = Quintus()
 
 
 Q.animations('seagull', {
-  glide: { frames: [5, 6], rate: 1 },
-  fly: { frames: [0,1,2,3,4,5,6,7,8], rate: 1/6, loop: true}
+  glide: { frames: [0, 7], rate: 1 },
+  fly: { frames: [0,1,2,3,4,5,6,7,8], rate: 1/15, loop: true}
 });
 
-Q.Sprite.extend("Shadow", { 
+Q.Sprite.extend("Shadow", {
   init: function(p) {
     this._super(p, {
       color: "rgba(0,0,0,0)",
-      y: 410,
+      y: Q.stage().seaLevel,
       w: 30,
       h: 1
     });
@@ -53,11 +52,11 @@ Q.Sprite.extend("Seagull", {
       sprite: "seagull",
       sheet: "seagull",
       x: 0,
-      y: 0,
+      y: Q.stage().seaLevel - 300,
       z: 10,
       vx: 400,
       state: 'glyding',
-      gravity: 0.15,
+      gravity: 0.1,
       toughness: 1000,
       points: [[-30, 0], [0, 10], [30, 0]]
     });
@@ -118,18 +117,12 @@ Q.Sprite.extend("Seagull", {
     $('#toughness').find('.bar').css({ width: toughness+'%' })
   },
 
-  updateVelocity: function(){
-    var velocity = Math.ceil(this.p.toughness / 10);
-
-    $('#toughness').find('.bar').css({ width: toughness+'%' })
-  },
-
   fly: function(){
     this.play('fly');
-    this.p.toughness -= 3;
+    this.p.toughness -= 2;
 
-    if (this.p.vy > -200){
-      this.p.vy -= 10;
+    if (this.p.vy > -100){
+      this.p.vy -= 5;
     }
 
   },
@@ -149,7 +142,7 @@ Q.Sprite.extend('Lighthouse', {
     this._super(p, {
       asset: 'lighthouse.png',
       x: 0,
-      y: 220,
+      y: Q.stage().seaLevel - 120,
       points: [[0,0],[20, 300]]
     });
   }
@@ -161,7 +154,7 @@ Q.Sprite.extend('Boat', {
     this._super(p, {
       asset: 'boat.png',
       x: 1000,
-      y: 300,
+      y: Q.stage().seaLevel - 110,
       points: [[-50, -124], [-100, 126]],
       speed: 2
     });
@@ -174,13 +167,13 @@ Q.Sprite.extend('Boat', {
     if (seagull && this.p.x - seagull.p.x <= -1000) {
       this.destroy();
       setTimeout(function(){
-        Q.stage().insert(new Q.Boat({ x: seagull.p.x + 800, speed: Q.random(0, 3)}));
+        Q.stage().insert(new Q.Boat({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 3)}));
       }, Q.random(0, 5000));
     }
   }
 });
 
-Q.scene("level1",function(stage) {
+Q.scene("level1", function(stage) {
   if ($('#infos').length === 0){
     var infos = $('<div></div>', { id: 'infos' })
     var toughnessBar = $('<div id="toughness"><div class="bar" style="width: 100%"></div></div>')
@@ -190,13 +183,17 @@ Q.scene("level1",function(stage) {
           .append(distance);
           $('#quintus').after(infos);
   }
+  stage.seaLevel = Q.el.height - Q.el.height / 4;
+
   var lighthouse = stage.insert(new Q.Lighthouse());
   var seagull = stage.insert(new Q.Seagull());
   var shadow = stage.insert(new Q.Shadow());
 
-  stage.add("viewport").follow(seagull);
+  stage.add("viewport").follow(seagull,{ x: true, y: false });
+  stage.viewport.offsetX = -(Q.el.width / 2.5);
+  // stage.viewport.offsetY = 500;
 
-  stage.insert(new Q.Boat({ x: seagull.p.x + 1000 }))
+  stage.insert(new Q.Boat({ x: seagull.p.x + Q.el.width }))
 });
 
 Q.scene('endGame',function(stage) {
@@ -208,6 +205,7 @@ Q.scene('endGame',function(stage) {
                                            label: "Play Again" }))         
   var label = box.insert(new Q.UI.Text({x:10, y: -10 - button.p.h, 
                                         label: stage.options.label }));
+
   button.on("click",function() {
     Q.clearStages();
     Q.stageScene('level1');
