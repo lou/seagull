@@ -216,10 +216,6 @@ Q.load("boat.png, lighthouse.png, sprites.png", function() {
   Q.stageScene("level1");
 });
 
-// Q.el.addEventListener('touchstart',function(e) {
-//   console.log('fly !!!')
-// });
-
 Q.el.addEventListener('mousedown',function(e) {
   var seagull = Q.stage().lists.Seagull[0];
 
