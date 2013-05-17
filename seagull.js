@@ -24,7 +24,7 @@ var Q = Quintus()
 
 
 Q.animations('seagull', {
-  glide: { frames: [7, 8], rate: 1 },
+  glide: { frames: [5, 6], rate: 1 },
   fly: { frames: [0,1,2,3,4,5,6,7,8], rate: 1/6, loop: true}
 });
 
