@@ -18,18 +18,7 @@ Quintus.Data = function(Q) {
 var Q = Quintus()
         .include("Sprites, Anim, Scenes, Input, 2D, Touch, UI, Random, Data")
         .setup({ maximize: true})
-        .controls()
         .touch();
-
-console.log(Q.input);
-
-Q.input.touchControls({
-  controls:  [ ['left','<' ],
-               [],
-               [],
-               [],
-               ['right','>' ]]
-});
 
 Q.animations('seagull', {
   glide: { frames: [0, 7], rate: 1 },
