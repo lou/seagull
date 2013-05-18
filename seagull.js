@@ -21,14 +21,14 @@ var Q = Quintus()
         .controls()
         .touch();
 
-
-Q.input.touchControls({ controls: [
-  [],
-  [],
-  [],
-  [],
-  []]
-});
+Q.touchEnabled = true;
+// Q.input.touchControls({ controls: [
+//   [],
+//   [],
+//   [],
+//   [],
+//   []]
+// });
 
 Q.animations('seagull', {
   glide: { frames: [0, 7], rate: 1 },
