@@ -21,7 +21,9 @@ var Q = Quintus()
         .controls()
         .touch();
 
-Q.InputSystem.touchEnabled = false;
+
+// console.log(Q.input);
+Q.input.touchEnabled = false;
 // Q.input.touchControls({ controls: [
 //   [],
 //   [],
