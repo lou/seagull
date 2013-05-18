@@ -264,7 +264,7 @@ Q.el.addEventListener('mouseup',function(e) {
 });
 
 
-Q.el.addEventListener('touch',function(e) {
+Q.el.addEventListener('touchstart',function(e) {
   var seagull = Q.stage().lists.Seagull[0];
 
   if (seagull && seagull.p.state != 'exhausted'){
@@ -272,7 +272,7 @@ Q.el.addEventListener('touch',function(e) {
   }
 });
 
-Q.el.addEventListener('touchEnd',function(e) {
+Q.el.addEventListener('touchend',function(e) {
   var seagull = Q.stage().lists.Seagull[0];
 
   if (seagull){
