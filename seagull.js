@@ -27,7 +27,7 @@ Q.input.touchControls({ controls: [
   [],
   [],
   [],
-  []
+  []]
 });
 
 Q.animations('seagull', {
