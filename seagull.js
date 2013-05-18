@@ -22,7 +22,13 @@ var Q = Quintus()
         .touch();
 
 
-Q.input.touchControls({ controls: [[], [], [], [], [], []]});
+Q.input.touchControls({ controls: [
+  [],
+  [],
+  [],
+  [],
+  []
+});
 
 Q.animations('seagull', {
   glide: { frames: [0, 7], rate: 1 },
