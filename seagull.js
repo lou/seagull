@@ -22,6 +22,8 @@ var Q = Quintus()
         .touch();
 
 
+Q.input.touchControls({});
+
 Q.animations('seagull', {
   glide: { frames: [0, 7], rate: 1 },
   fly: { frames: [0,1,2,3,4,5,6,7,8], rate: 1/15, loop: true}
@@ -173,6 +175,32 @@ Q.Sprite.extend('Boat', {
   }
 });
 
+Q.Sprite.extend('Fish', {
+  init: function(p) {
+
+    this._super(p, {
+      asset: 'fish.png',
+      x: 1000,
+      y: Q.stage().seaLevel + 60,
+      speed: 1
+    });
+  },
+  step: function(dt){
+    this.p.x -= this.p.speed;
+    var seagull = Q.stage().lists.Seagull[0];
+
+    // destroy the boat if it has disappeared from the screen
+    if (seagull && this.p.x - seagull.p.x <= -1000) {
+      this.destroy();
+      setTimeout(function(){
+        Q.stage().insert(new Q.Fish({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 3)}));
+      }, Q.random(0, 5000));
+    }
+  }
+});
+
+
+
 Q.scene("level1", function(stage) {
   if ($('#infos').length === 0){
     var infos = $('<div></div>', { id: 'infos' })
@@ -194,6 +222,7 @@ Q.scene("level1", function(stage) {
   // stage.viewport.offsetY = 500;
 
   stage.insert(new Q.Boat({ x: seagull.p.x + Q.el.width }))
+  stage.insert(new Q.Fish({ x: seagull.p.x + Q.el.width * 2 }));
 });
 
 Q.scene('endGame',function(stage) {
@@ -213,7 +242,7 @@ Q.scene('endGame',function(stage) {
   box.fit(20);
 });
 
-Q.load("boat.png, lighthouse.png, sprites.png", function() {
+Q.load("boat.png, lighthouse.png, sprites.png, fish.png", function() {
   Q.compileSheets("sprites.png", "sprites.json");
   Q.stageScene("level1");
 });
@@ -227,6 +256,23 @@ Q.el.addEventListener('mousedown',function(e) {
 });
 
 Q.el.addEventListener('mouseup',function(e) {
+  var seagull = Q.stage().lists.Seagull[0];
+
+  if (seagull){
+    seagull.p.state = 'glyding';
+  }
+});
+
+
+Q.el.addEventListener('touch',function(e) {
+  var seagull = Q.stage().lists.Seagull[0];
+
+  if (seagull && seagull.p.state != 'exhausted'){
+    seagull.p.state = 'flying';
+  }
+});
+
+Q.el.addEventListener('touchEnd',function(e) {
   var seagull = Q.stage().lists.Seagull[0];
 
   if (seagull){
