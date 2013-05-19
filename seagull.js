@@ -1,11 +1,11 @@
 // TODO
 // - Shadow should be a seagull component
 // - fix crash when seagull hit the water
-// - add background and related sprites(water, clouds ....)
+// - add more sprites(clouds ....)
 
 Quintus.Random = function(Q) {
   Q.random = function(min,max) {
-    return Math.ceil(min + Math.random() * (max - min));
+    return min + Math.random() * (max - min);
   }
 };
 
@@ -54,9 +54,9 @@ Q.Sprite.extend("Seagull", {
       x: 0,
       y: Q.stage().seaLevel - 300,
       z: 10,
-      vx: 400,
-      state: 'glyding',
-      gravity: 0.1,
+      vx: 0,
+      state: 'init',
+      gravity: 0,
       toughness: 1000,
       points: [[-30, 0], [0, 20], [30, 0]]
     });
@@ -89,6 +89,7 @@ Q.Sprite.extend("Seagull", {
         this.crash();
         break;
       case 'exhausted':
+        // FIXME: Possible bug when seagull was not flying
         this.glide();
         break;
     } 
@@ -100,7 +101,7 @@ Q.Sprite.extend("Seagull", {
 
     shadow.p.x = this.p.x - 10;
 
-    if ( shadowDistance <= 300 ){
+    if ( shadowDistance <= 200 ){
       shadow.p.color = "rgba(0,0,0,1)";
     } else {
       shadow.p.color = "rgba(0,0,0,0)";
@@ -160,7 +161,7 @@ Q.Sprite.extend('Boat', {
       x: 1000,
       y: Q.stage().seaLevel - 110,
       points: [[-50, -124], [-100, 126]],
-      speed: 2
+      speed: 1
     });
   },
   step: function(dt){
@@ -171,8 +172,8 @@ Q.Sprite.extend('Boat', {
     if (seagull && this.p.x - seagull.p.x <= -1000) {
       this.destroy();
       setTimeout(function(){
-        Q.stage().insert(new Q.Boat({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 2)}));
-      }, Q.random(0, 5000));
+        Q.stage().insert(new Q.Boat({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 0.5)}));
+      }, Q.random(0, 6000));
     }
   }
 });
@@ -196,7 +197,7 @@ Q.Sprite.extend('Fish', {
       this.destroy();
       setTimeout(function(){
         Q.stage().insert(new Q.Fish({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 2)}));
-      }, Q.random(0, 5000));
+      }, Q.random(0, 3000));
     }
   }
 });
@@ -221,13 +222,14 @@ Q.scene("level1", function(stage) {
 
   stage.add("viewport").follow(seagull,{ x: true, y: false });
   stage.viewport.offsetX = -(Q.el.width / 2.5);
-  // stage.viewport.offsetY = 500;
+  stage.viewport.offsetY = 500;
 
   stage.insert(new Q.Boat({ x: seagull.p.x + Q.el.width }))
   stage.insert(new Q.Fish({ x: seagull.p.x + Q.el.width * 2 }));
 });
 
 Q.scene('endGame',function(stage) {
+
   var box = stage.insert(new Q.UI.Container({
     x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)"
   }));
@@ -249,9 +251,16 @@ Q.load("boat.png, lighthouse.png, sprites.png, fish.png", function() {
   Q.stageScene("level1");
 });
 
+
+// TODO: refactor events, it's actually the same methods for touch and click
+
 Q.el.addEventListener('mousedown',function(e) {
   var seagull = Q.stage().lists.Seagull[0];
 
+  if (seagull.p.state = 'init' ){
+    seagull.p.vx = 300;
+    seagull.p.gravity = 0.1;
+  }
   if (seagull && seagull.p.state != 'exhausted'){
     seagull.p.state = 'flying';
   }
