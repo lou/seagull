@@ -23,7 +23,7 @@ var Q = Quintus()
 
 Q.animations('seagull', {
   glide: { frames: [0, 7], rate: 1 },
-  fly: { frames: [0,1,2,3,4,5,6,7,8], rate: 1/15, loop: true}
+  fly: { frames: [0,1,2,3,4,5,6,7,8], rate: 1/15 }
 });
 
 Q.Sprite.extend("Shadow", {
@@ -32,7 +32,8 @@ Q.Sprite.extend("Shadow", {
       color: "rgba(0,0,0,0)",
       y: Q.stage().seaLevel,
       w: 30,
-      h: 1
+      h: 1,
+      type: Q.SPRITEDEFAULT
     });
   },
   draw: function(ctx) {
@@ -63,8 +64,6 @@ Q.Sprite.extend("Seagull", {
     this.on("hit.sprite", function(collision) {
       if (collision.obj.isA('Boat')){
         this.crash('You crashed on a boat !');
-      } else if (collision.obj.isA('Shadow')){
-        this.crash('You crashed in water')
       }
     });
   },
@@ -72,6 +71,12 @@ Q.Sprite.extend("Seagull", {
     this.updateToughness();
     this.updateDistance();
     this.updateShadow();
+
+    var seagullAltitude = this.p.y + 10;
+
+    if (seagullAltitude >= Q.stage().seaLevel){
+      this.crash('You crashed in Water !');
+    }
 
     switch(this.p.state){
       case 'flying':
@@ -166,7 +171,7 @@ Q.Sprite.extend('Boat', {
     if (seagull && this.p.x - seagull.p.x <= -1000) {
       this.destroy();
       setTimeout(function(){
-        Q.stage().insert(new Q.Boat({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 3)}));
+        Q.stage().insert(new Q.Boat({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 2)}));
       }, Q.random(0, 5000));
     }
   }
@@ -190,7 +195,7 @@ Q.Sprite.extend('Fish', {
     if (seagull && this.p.x - seagull.p.x <= -1000) {
       this.destroy();
       setTimeout(function(){
-        Q.stage().insert(new Q.Fish({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 3)}));
+        Q.stage().insert(new Q.Fish({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 2)}));
       }, Q.random(0, 5000));
     }
   }
