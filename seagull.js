@@ -21,13 +21,6 @@ var Q = Quintus()
         .controls(false)
         .touch();
 
-console.log(Q.input);
-
-Q.input.touchControls({
-  controls:  [[]],
-  width: 0
-});
-
 Q.animations('seagull', {
   glide: { frames: [0, 7], rate: 1 },
   fly: { frames: [0,1,2,3,4,5,6,7,8], rate: 1/15, loop: true}
@@ -64,7 +57,7 @@ Q.Sprite.extend("Seagull", {
       state: 'glyding',
       gravity: 0.1,
       toughness: 1000,
-      points: [[-30, 0], [0, 10], [30, 0]]
+      points: [[-30, 0], [0, 20], [30, 0]]
     });
     this.add('2d, animation');
     this.on("hit.sprite", function(collision) {
