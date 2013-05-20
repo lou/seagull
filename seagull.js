@@ -280,8 +280,14 @@ Q.el.addEventListener('mouseup',function(e) {
 Q.el.addEventListener('touchstart',function(e) {
   var seagull = Q.stage().lists.Seagull[0];
 
-  if (seagull && seagull.p.state != 'exhausted'){
-    seagull.p.state = 'flying';
+  if (seagull){
+    if (seagull.p.state = 'init' ){
+      seagull.p.vx = 300;
+      seagull.p.gravity = 0.1;
+    }
+    if (seagull.p.state != 'exhausted'){
+      seagull.p.state = 'flying';
+    }
   }
 });
 
