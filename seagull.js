@@ -316,7 +316,7 @@ Q.el.addEventListener('touchstart',function(e) {
 
   if (seagull){
     if (seagull.p.state = 'init' ){
-      seagull.p.vx = 500;
+      seagull.p.vx = 300;
       seagull.p.gravity = 0.1;
     }
     if (seagull.p.state != 'exhausted'){
