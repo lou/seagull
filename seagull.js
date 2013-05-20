@@ -3,7 +3,6 @@
 // - fix crash when seagull hit the water
 // - add more sprites(clouds ....)
 // - Only one boat should be visible
-// - Other moving sprites should be 2d component
 
 Quintus.Random = function(Q) {
   Q.random = function(min,max) {
@@ -196,20 +195,19 @@ Q.Sprite.extend('Boat', {
       x: 1000,
       y: Q.stage().seaLevel - 110,
       points: [[-50, -124], [-100, 126]],
-      speed: 1,
+      vx: -100,
       gravity: 0
     });
     this.add('2d');
   },
   step: function(dt){
-    // this.p.x -= this.p.speed;
     var seagull = Q.stage().lists.Seagull[0];
 
     // destroy the boat if it has disappeared from the screen
     if (seagull && this.p.x - seagull.p.x <= -1000) {
       this.destroy();
       setTimeout(function(){
-        Q.stage().insert(new Q.Boat({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 0.5)}));
+        Q.stage().insert(new Q.Boat({ x: seagull.p.x + Q.el.width, vx: Q.random(-100, 0)}));
       }, Q.random(0, 6000));
     }
   }
@@ -222,18 +220,20 @@ Q.Sprite.extend('Fish', {
       asset: 'fish.png',
       x: 1000,
       y: Q.stage().seaLevel + 40,
-      speed: 1
+      vx: -100,
+      gravity: 0
     });
+    this.add('2d');
   },
   step: function(dt){
-    this.p.x -= this.p.speed;
+    // this.p.x -= this.p.speed;
     var seagull = Q.stage().lists.Seagull[0];
 
     // destroy the boat if it has disappeared from the screen
     if (seagull && this.p.x - seagull.p.x <= -1000) {
       this.destroy();
       setTimeout(function(){
-        Q.stage().insert(new Q.Fish({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 2)}));
+        Q.stage().insert(new Q.Fish({ x: seagull.p.x + Q.el.width, vx: Q.random(-100, 0)}));
       }, Q.random(0, 3000));
     }
   }
