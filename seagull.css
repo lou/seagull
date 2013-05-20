@@ -1,15 +1,9 @@
 body{
   font-family: Arial;
   font-size: 1em;
-background: #ebf1f6; /* Old browsers */
-background: -moz-linear-gradient(top, #ffffff 0%, #ffffff 74.6%, #315faa 74.6%, #041634 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(74.6%,#ffffff), color-stop(74.6%,#315faa), color-stop(100%,#041634)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, #ffffff 0%,#ffffff 74.6%,#315faa 74.6%,#041634 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, #ffffff 0%,#ffffff 74.6%,#315faa 74.6%,#041634 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, #ffffff 0%,#ffffff 74.6%,#315faa 74.6%,#041634 100%); /* IE10+ */
-background: linear-gradient(to bottom, #ffffff 0%,#ffffff 74.6%,#315faa 74.6%,#041634 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#041634',GradientType=0 ); /* IE6-9 */}
-
+  background: #ebf1f6; /* Old browsers */
+  background: linear-gradient(to bottom, #ffffff 0%,#ffffff 74.6%,#041634 74.6%,#315faa 100%); /* W3C */
+}
 #infos{
   position: absolute;
   top: 40px;
@@ -24,15 +18,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
   color: #999;
 }
 
+/*#c40000, #c25700, #e8da00, #54a900*/
+
 #toughness{
   width: 200px;
   height: 10px;
-  background: #fff;
   border: 1px #ccc solid;
+  background: #54a900; /* Old browsers */
+  background: linear-gradient(to right, #54a900 0%, #e8da00 45%, #c25700 75%, #c40000 100%); /* W3C */
 }
 
 .bar{
   height: 100%;
   width: 100%;
-  background: #eee;
+  background: #fff;
+  float: right;
 }

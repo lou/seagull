@@ -2,10 +2,11 @@
 // - Shadow should be a seagull component
 // - fix crash when seagull hit the water
 // - add more sprites(clouds ....)
+// - Only one boat should be visible
 
 Quintus.Random = function(Q) {
   Q.random = function(min,max) {
-    return min + Math.random() * (max - min);
+    return Math.ceil(min + Math.random() * (max - min));
   }
 };
 
@@ -52,9 +53,10 @@ Q.Sprite.extend("Seagull", {
       sprite: "seagull",
       sheet: "seagull",
       x: 0,
-      y: Q.stage().seaLevel - 300,
+      y: Q.stage().seaLevel - 330,
       z: 10,
       vx: 0,
+      vy: 0,
       state: 'init',
       gravity: 0,
       toughness: 1000,
@@ -62,8 +64,16 @@ Q.Sprite.extend("Seagull", {
     });
     this.add('2d, animation');
     this.on("hit.sprite", function(collision) {
-      if (collision.obj.isA('Boat')){
+      var obj = collision.obj;
+      if (obj.isA('Boat')){
         this.crash('You crashed on a boat !');
+      } else if (obj.isA('Fish')){
+        var seagull = this;
+        seagull.eat();
+        obj.destroy();
+        setTimeout(function(){
+          Q.stage().insert(new Q.Fish({ x: seagull.p.x + Q.el.width, speed: Q.random(0, 2)}));
+        }, Q.random(0, 3000));
       }
     });
   },
@@ -74,9 +84,15 @@ Q.Sprite.extend("Seagull", {
 
     var seagullAltitude = this.p.y + 10;
 
-    if (seagullAltitude >= Q.stage().seaLevel){
-      this.crash('You crashed in Water !');
+    if (seagullAltitude >= Q.stage().seaLevel && this.p.state === 'exhausted'){
+      this.crash('You are exhausted !!');
     }
+
+    var stage = Q.stage();
+    if (seagullAltitude >= stage.seaLevel){
+      this.swim();
+    }
+
 
     switch(this.p.state){
       case 'flying':
@@ -101,7 +117,7 @@ Q.Sprite.extend("Seagull", {
 
     shadow.p.x = this.p.x - 10;
 
-    if ( shadowDistance <= 200 ){
+    if ( shadowDistance <= 200 && shadowDistance >= 10){
       shadow.p.color = "rgba(0,0,0,1)";
     } else {
       shadow.p.color = "rgba(0,0,0,0)";
@@ -124,16 +140,34 @@ Q.Sprite.extend("Seagull", {
 
   fly: function(){
     this.play('fly');
-    this.p.toughness -= 2;
+    // Flying under the sea
+    if (this.p.y + 10 >= Q.stage().seaLevel){
+      this.p.vy -= 100;
+      this.p.vx = 200;
+    }
+    else {
+      this.p.vx = 300;
+    }
+    this.p.toughness -= 1.5;
 
     if (this.p.vy > -100){
-      this.p.vy -= 5;
+      this.p.vy -= 10;
     }
 
   },
 
   glide: function(){
     this.play('glide');
+  },
+
+  swim: function(){
+    this.p.toughness -= 1;
+    this.p.vy = 30;
+    this.p.vx = 200;
+  },
+
+  eat: function(){
+    this.p.toughness = this.p.toughness + 250 < 1000 ? this.p.toughness + 250 : 1000;
   },
 
   crash: function(text){
@@ -147,7 +181,7 @@ Q.Sprite.extend('Lighthouse', {
     this._super(p, {
       asset: 'lighthouse.png',
       x: 15,
-      y: Q.stage().seaLevel - 120,
+      y: Q.stage().seaLevel - 150,
       points: [[0,0],[20, 300]]
     });
   }
@@ -184,7 +218,7 @@ Q.Sprite.extend('Fish', {
     this._super(p, {
       asset: 'fish.png',
       x: 1000,
-      y: Q.stage().seaLevel + 60,
+      y: Q.stage().seaLevel + 40,
       speed: 1
     });
   },
@@ -282,7 +316,7 @@ Q.el.addEventListener('touchstart',function(e) {
 
   if (seagull){
     if (seagull.p.state = 'init' ){
-      seagull.p.vx = 300;
+      seagull.p.vx = 500;
       seagull.p.gravity = 0.1;
     }
     if (seagull.p.state != 'exhausted'){
