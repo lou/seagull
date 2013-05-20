@@ -3,6 +3,7 @@
 // - fix crash when seagull hit the water
 // - add more sprites(clouds ....)
 // - Only one boat should be visible
+// - Other moving sprites should be 2d component
 
 Quintus.Random = function(Q) {
   Q.random = function(min,max) {
@@ -195,11 +196,13 @@ Q.Sprite.extend('Boat', {
       x: 1000,
       y: Q.stage().seaLevel - 110,
       points: [[-50, -124], [-100, 126]],
-      speed: 1
+      speed: 1,
+      gravity: 0
     });
+    this.add('2d');
   },
   step: function(dt){
-    this.p.x -= this.p.speed;
+    // this.p.x -= this.p.speed;
     var seagull = Q.stage().lists.Seagull[0];
 
     // destroy the boat if it has disappeared from the screen
