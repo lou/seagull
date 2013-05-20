@@ -146,7 +146,7 @@ Q.Sprite.extend('Lighthouse', {
   init: function(p) {
     this._super(p, {
       asset: 'lighthouse.png',
-      x: 0,
+      x: 15,
       y: Q.stage().seaLevel - 120,
       points: [[0,0],[20, 300]]
     });
